@@ -146,22 +146,23 @@ int main(int argc, char* argv[])
 {
     try
     {
-        if (argc != 2)
-        {
-            std::cerr << "Usage: async_tcp_echo_server <port>\n";
-            return 1;
+        if (std::getenv("SERVER_PORT")==NULL){
+            std::cerr << "Error: SERVER_PORT not set";
+            exit(1);
         }
-
+        std::string SERVER_PORT = std::getenv("SERVER_PORT");
+        std::cout << "Try to start server, port:" << SERVER_PORT << std::endl ;
         boost::asio::io_service io_service;
 
         using namespace std; // For atoi.
-        server s(io_service, atoi(argv[1]));
+        server s(io_service, atoi(SERVER_PORT.c_str()));
 
         io_service.run();
     }
     catch (std::exception& e)
     {
         std::cerr << "Exception: " << e.what() << "\n";
+        std::cout << "To change port: ./setup.sh" << std::endl ;
     }
 
     return 0;
